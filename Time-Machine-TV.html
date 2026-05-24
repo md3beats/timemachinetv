@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Machine TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --walnut: #1a0f00;
+  --walnut-deep: #0d0700;
+  --cabinet: #8a5629;
+  --cabinet-dark: #4f2b10;
+  --cream: #f1d8a9;
+  --amber: #d79b3a;
+  --phosphor: #39ff14;
+  --phosphor-dim: rgba(57, 255, 20, 0.68);
+  --screen-blue: rgba(58, 190, 211, 0.2);
+  --red-alert: #ff3c2e;
+  --ink: #261305;
+  --paper: #f8e8c5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--paper);
+  background: var(--walnut);
+  font-family: "IBM Plex Mono", monospace;
+  overflow-x: hidden;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+.woodgrain {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(90deg, rgba(255, 210, 129, 0.05) 0 1px, transparent 1px 18px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.34), transparent 12%, rgba(255, 183, 78, 0.08) 43%, rgba(0, 0, 0, 0.22) 70%),
+    repeating-linear-gradient(90deg, #170b00 0 44px, #211000 44px 48px, #120800 48px 92px);
+}
+
+.woodgrain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(245, 164, 78, 0.14), transparent 22%),
+    radial-gradient(circle at 76% 44%, rgba(255, 218, 127, 0.08), transparent 19%),
+    repeating-linear-gradient(180deg, transparent 0 18px, rgba(0, 0, 0, 0.15) 18px 19px);
+  mix-blend-mode: soft-light;
+}
+
+.page-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 34px 0 56px;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: min(760px, 92vh);
+  padding-top: 84px;
+}
+
+.antenna {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  width: min(440px, 72vw);
+  height: 120px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.antenna-left,
+.antenna-right {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  width: 6px;
+  height: 126px;
+  border-radius: 999px;
+  background: linear-gradient(#d9c093, #5c4420);
+  box-shadow: 0 0 10px rgba(255, 214, 134, 0.3);
+  transform-origin: bottom center;
+}
+
+.antenna-left {
+  transform: rotate(-42deg);
+}
+
+.antenna-right {
+  transform: rotate(42deg);
+}
+
+.antenna-base {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 98px;
+  height: 28px;
+  border: 4px solid #3c210c;
+  border-radius: 50% 50% 10px 10px;
+  background: linear-gradient(#c18745, #5e3213);
+  transform: translateX(-50%);
+}
+
+.tv-set {
+  position: relative;
+  width: min(980px, 100%);
+  padding: clamp(18px, 3vw, 34px);
+  border: 8px solid #2b1607;
+  border-radius: 28px 28px 40px 40px;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255, 233, 179, 0.34), transparent 28%),
+    linear-gradient(145deg, #b17236, var(--cabinet) 38%, #5c3215 100%);
+  box-shadow:
+    0 26px 0 #2f1707,
+    0 44px 80px rgba(0, 0, 0, 0.7),
+    inset 0 8px 0 rgba(255, 231, 175, 0.24),
+    inset 0 -12px 18px rgba(0, 0, 0, 0.28);
+}
+
+.tv-set::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 20px 20px 32px 32px;
+  pointer-events: none;
+  border: 2px solid rgba(255, 225, 161, 0.16);
+}
+
+.tv-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+h1,
+h2 {
+  font-family: "VT323", monospace;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+h1 {
+  color: #ffe2a3;
+  font-size: clamp(2.6rem, 7vw, 5.8rem);
+  line-height: 0.85;
+  text-shadow: 3px 3px 0 #4a2409, 0 0 14px rgba(255, 220, 142, 0.38);
+}
+
+.signal-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 2px solid #321704;
+  border-radius: 6px;
+  color: var(--ink);
+  background: linear-gradient(#ecd19a, #bd7a35);
+  box-shadow: 0 4px 0 #2d1607;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.tv-face {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(112px, 15vw, 154px);
+  gap: clamp(14px, 2vw, 24px);
+  align-items: stretch;
+}
+
+.screen-bezel {
+  padding: clamp(12px, 2vw, 22px);
+  border-radius: 30px;
+  background:
+    linear-gradient(145deg, #36200f, #110a04 58%, #5e3919);
+  box-shadow:
+    inset 0 0 0 8px #1e1006,
+    inset 0 0 42px rgba(0, 0, 0, 0.85),
+    0 6px 0 rgba(255, 228, 166, 0.13);
+}
+
+.crt-screen {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(300px, 48vw, 505px);
+  overflow: hidden;
+  isolation: isolate;
+  border: 5px solid #080b07;
+  border-radius: 36% / 12%;
+  color: var(--phosphor);
+  background:
+    radial-gradient(circle at 50% 52%, rgba(57, 255, 20, 0.18), transparent 34%),
+    radial-gradient(ellipse at center, rgba(64, 167, 197, 0.22), rgba(3, 14, 11, 0.95) 56%, #000 100%);
+  box-shadow:
+    inset 0 0 44px rgba(0, 0, 0, 0.92),
+    inset 0 0 120px rgba(57, 255, 20, 0.18),
+    0 0 28px rgba(57, 255, 20, 0.16);
+}
+
+.crt-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #000;
+  animation: tvOn 1.9s ease-out forwards;
+  transform-origin: center;
+}
+
+.crt-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: 0.54;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 42%, rgba(0, 0, 0, 0.48) 82%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent 14%, rgba(255, 255, 255, 0.06) 46%, transparent 76%);
+}
+
+.screen-glass {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 48% 44%, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0 1px, rgba(0, 0, 0, 0.23) 1px 4px);
+  animation: scan 3.4s linear infinite;
+}
+
+.screen-content {
+  position: relative;
+  z-index: 1;
+  width: min(82%, 520px);
+  text-align: center;
+  text-shadow: 0 0 8px var(--phosphor), 0 0 18px rgba(57, 255, 20, 0.38);
+}
+
+.screen-content.player-mode {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: stretch;
+  text-align: left;
+  text-shadow: none;
+}
+
+.main-tv-embed {
+  width: 100%;
+  height: 100%;
+  min-height: clamp(300px, 48vw, 505px);
+  display: block;
+  border: 0;
+  border-radius: 28% / 9%;
+  background: #000;
+}
+
+.broadcast-overlay {
+  position: absolute;
+  left: clamp(10px, 2vw, 18px);
+  right: clamp(10px, 2vw, 18px);
+  bottom: clamp(10px, 2vw, 18px);
+  z-index: 7;
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  border: 2px solid rgba(57, 255, 20, 0.62);
+  border-radius: 7px;
+  color: var(--phosphor);
+  background: rgba(1, 8, 3, 0.86);
+  box-shadow: 0 0 18px rgba(57, 255, 20, 0.24), inset 0 0 18px rgba(57, 255, 20, 0.08);
+  text-shadow: 0 0 9px rgba(57, 255, 20, 0.7);
+}
+
+.broadcast-overlay h2 {
+  max-width: 100%;
+  overflow: hidden;
+  color: #dfffda;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: clamp(0.78rem, 1.8vw, 1rem);
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.broadcast-label {
+  margin: 0;
+  color: rgba(180, 255, 174, 0.82);
+  font-family: "VT323", monospace;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  line-height: 1;
+}
+
+.broadcast-actions {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+}
+
+.broadcast-actions button,
+.broadcast-actions a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 9px;
+  border: 2px solid rgba(57, 255, 20, 0.74);
+  border-radius: 5px;
+  color: var(--phosphor);
+  background: #061007;
+  font-size: clamp(0.72rem, 1.8vw, 0.88rem);
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: inset 0 0 12px rgba(57, 255, 20, 0.12);
+}
+
+.broadcast-actions button:active,
+.broadcast-actions a:active {
+  transform: scale(0.97);
+}
+
+.screen-kicker,
+.screen-title,
+.screen-copy {
+  margin: 0;
+  font-family: "VT323", monospace;
+}
+
+.screen-kicker {
+  color: rgba(137, 255, 126, 0.72);
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+}
+
+.screen-title {
+  margin-top: 8px;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  line-height: 0.86;
+}
+
+.screen-copy {
+  margin-top: 14px;
+  color: rgba(210, 255, 210, 0.78);
+  font-size: clamp(1.25rem, 3.8vw, 2rem);
+  line-height: 1.05;
+}
+
+.screen-content.error {
+  width: min(90%, 640px);
+  color: var(--red-alert);
+  text-shadow: 0 0 10px rgba(255, 60, 46, 0.88);
+}
+
+.screen-content.error .screen-title {
+  font-size: clamp(2.55rem, 7vw, 4.7rem);
+  line-height: 0.92;
+}
+
+.screen-content.error .screen-copy,
+.screen-content.error .screen-kicker {
+  color: #ffb1a8;
+}
+
+.static-mode {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(57, 255, 20, 0.13), transparent 34%),
+    repeating-radial-gradient(circle at 18% 21%, rgba(255, 255, 255, 0.32) 0 1px, transparent 1px 3px),
+    repeating-radial-gradient(circle at 72% 68%, rgba(255, 255, 255, 0.22) 0 1px, transparent 1px 4px),
+    #101412;
+  animation: staticJitter 0.16s steps(2) infinite;
+}
+
+.no-signal {
+  width: min(84%, 520px);
+  height: min(64%, 300px);
+  display: grid;
+  place-items: center;
+  border: 3px solid rgba(255, 255, 255, 0.36);
+  box-shadow: 0 0 24px rgba(57, 255, 20, 0.28);
+  background:
+    linear-gradient(90deg, #fff 0 14.2%, #f4f05a 14.2% 28.4%, #22d6df 28.4% 42.6%, #18c84e 42.6% 56.8%, #d331c7 56.8% 71%, #e6292d 71% 85.2%, #2147d6 85.2% 100%);
+}
+
+.no-signal span {
+  padding: 10px 18px;
+  color: #fff;
+  background: #050505;
+  font-family: "VT323", monospace;
+  font-size: clamp(2.2rem, 8vw, 5rem);
+  text-shadow: 0 0 10px #fff;
+}
+
+.control-panel {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
+  padding: clamp(12px, 2vw, 18px);
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, #d0a05d, #7d481e 48%, #3c1f0b);
+  box-shadow: inset 0 0 0 5px #331907, inset 0 0 26px rgba(0, 0, 0, 0.35);
+}
+
+.channel-dial {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 8px solid #2d1607;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 33% 26%, #ffe4a5, transparent 19%),
+    radial-gradient(circle, #d69847 0 28%, #5f3110 29% 100%);
+  box-shadow: inset -8px -10px 18px rgba(0, 0, 0, 0.42), 0 7px 0 #211006;
+}
+
+.channel-dial span {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 9px;
+  height: 30%;
+  border-radius: 999px;
+  background: #1e0e04;
+  transform: translateX(-50%);
+}
+
+.channel-dial.spin {
+  animation: dialSpin 0.72s cubic-bezier(.2, .82, .3, 1);
+}
+
+.speaker-grill {
+  display: grid;
+  align-content: center;
+  gap: 10px;
+}
+
+.speaker-grill i {
+  display: block;
+  height: 7px;
+  border-radius: 999px;
+  background: #251104;
+  box-shadow: inset 0 2px 0 rgba(255, 225, 160, 0.18);
+}
+
+.status-light {
+  width: 26px;
+  height: 26px;
+  justify-self: center;
+  border-radius: 50%;
+  background: var(--phosphor);
+  box-shadow: 0 0 16px var(--phosphor), inset 0 -4px 0 rgba(0, 0, 0, 0.22);
+}
+
+.tuner-form {
+  display: grid;
+  grid-template-columns: auto minmax(160px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin-top: 18px;
+  padding: 12px;
+  border: 3px solid #321704;
+  border-radius: 12px;
+  background: rgba(31, 13, 2, 0.62);
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.28);
+}
+
+.tuner-form label {
+  color: #ffe6ac;
+  font-weight: 700;
+}
+
+.tuner-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 13px;
+  border: 3px solid #061007;
+  border-radius: 6px;
+  color: var(--phosphor);
+  background: #020805;
+  font-family: "VT323", monospace;
+  font-size: 1.9rem;
+  box-shadow: inset 0 0 18px rgba(57, 255, 20, 0.2), 0 0 12px rgba(57, 255, 20, 0.12);
+  text-transform: uppercase;
+}
+
+.tuner-form input:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--phosphor);
+  outline-offset: 3px;
+}
+
+.search-button,
+.action-btn,
+.filter-btn,
+.modal-actions button {
+  border: 3px solid #2d1607;
+  border-radius: 7px;
+  color: #211005;
+  background: linear-gradient(#ffe1a6, #c98132 72%, #9a521b);
+  box-shadow: 0 5px 0 #2a1305, inset 0 2px 0 rgba(255, 255, 255, 0.24);
+  font-weight: 800;
+}
+
+.search-button {
+  min-height: 48px;
+  padding: 9px 16px;
+}
+
+.search-button:active,
+.action-btn:active,
+.filter-btn:active,
+.modal-actions button:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 0 #2a1305;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 44px auto 30px;
+}
+
+.filter-btn {
+  min-height: 44px;
+  padding: 8px 13px;
+}
+
+.filter-btn.is-active {
+  color: #071105;
+  background: linear-gradient(#78ff63, #30b61d);
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.42), 0 0 16px rgba(57, 255, 20, 0.42);
+}
+
+.section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.section-head h2 {
+  color: #ffe2a3;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  text-shadow: 2px 2px 0 #3c1d07;
+}
+
+.section-head p {
+  margin: 0 0 8px;
+  color: #d6bd86;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.video-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  border: 3px solid #3a1b07;
+  border-radius: 8px;
+  color: #241104;
+  background: linear-gradient(#f2dcae, #c99558);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4), 0 0 18px rgba(57, 255, 20, 0.34);
+}
+
+.thumb-wrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #150b04;
+}
+
+.thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: sepia(0.58) saturate(0.82) contrast(1.08);
+}
+
+.duration-badge {
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  padding: 4px 7px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: var(--phosphor);
+  background: #030603;
+  font-family: "VT323", monospace;
+  font-size: 1.35rem;
+  line-height: 1;
+  text-shadow: 0 0 8px var(--phosphor);
+}
+
+.card-body {
+  padding: 14px 14px 8px;
+}
+
+.card-body h3 {
+  min-height: 3.9em;
+  margin: 0 0 10px;
+  color: #1d0c02;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.card-meta {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  color: #5d3514;
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  padding: 12px 14px 14px;
+}
+
+.action-btn {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 9px;
+  text-decoration: none;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.copy-btn {
+  min-width: 42px;
+  padding: 7px;
+  color: var(--phosphor);
+  background: #090e08;
+  text-shadow: 0 0 8px var(--phosphor);
+}
+
+.empty-results {
+  grid-column: 1 / -1;
+  padding: 24px;
+  border: 2px dashed rgba(255, 229, 173, 0.35);
+  color: #dbc18c;
+  text-align: center;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(6, 3, 0, 0.84);
+  backdrop-filter: blur(5px);
+}
+
+.modal-backdrop.hidden {
+  display: none;
+}
+
+.modal-card {
+  width: min(92vw, 620px);
+  max-height: min(86vh, 760px);
+  overflow: auto;
+  border: 5px solid #2a1305;
+  border-radius: 14px;
+  color: #2a1305;
+  background: linear-gradient(#f5dfb1, #b77532);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.72), inset 0 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.modal-actions a {
+  color: #201005;
+  font-weight: 800;
+}
+
+.modal-actions button {
+  min-height: 42px;
+  padding: 8px 15px;
+}
+
+details {
+  margin-top: 18px;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.video-shell {
+  width: min(1080px, 94vw);
+  color: var(--paper);
+  background: linear-gradient(145deg, #8b5527, #2c1607);
+}
+
+.video-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.video-titlebar h2 {
+  color: #ffe2a3;
+  font-size: clamp(1.7rem, 4vw, 2.7rem);
+  line-height: 1;
+}
+
+.close-video {
+  width: 46px;
+  height: 46px;
+  border: 3px solid #160a02;
+  border-radius: 50%;
+  color: #ffe8b7;
+  background: radial-gradient(circle, #df3329, #68140f);
+  box-shadow: 0 4px 0 #160a02, 0 0 14px rgba(255, 63, 46, 0.32);
+  font-size: 1.35rem;
+}
+
+.embed-bezel {
+  margin: 0 16px 18px;
+  padding: clamp(10px, 2vw, 20px);
+  border-radius: 24px;
+  background: linear-gradient(145deg, #160b04, #000, #4d2b12);
+  box-shadow: inset 0 0 0 7px #0c0602, inset 0 0 38px rgba(0, 0, 0, 0.8);
+}
+
+.embed-screen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 4px solid #000;
+  border-radius: 22% / 8%;
+  background: #000;
+}
+
+.embed-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0 1px, rgba(0, 0, 0, 0.2) 1px 4px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+.embed-screen iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+.toast {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 50;
+  padding: 12px 16px;
+  border: 2px solid var(--phosphor);
+  border-radius: 7px;
+  color: var(--phosphor);
+  background: rgba(1, 8, 3, 0.94);
+  font-family: "VT323", monospace;
+  font-size: 1.7rem;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  text-shadow: 0 0 10px var(--phosphor);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes tvOn {
+  0% {
+    transform: scaleY(1);
+    background: #000;
+  }
+  46% {
+    transform: scaleY(0.012);
+    background: #dcffdc;
+    box-shadow: 0 0 40px rgba(213, 255, 213, 0.9);
+  }
+  72% {
+    transform: scaleY(0.012) scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0) scaleX(1);
+    opacity: 0;
+  }
+}
+
+@keyframes scan {
+  to {
+    background-position: 0 28px;
+  }
+}
+
+@keyframes staticJitter {
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+    filter: contrast(1.15);
+  }
+  100% {
+    background-position: 7px -11px, -9px 4px, 11px 13px;
+    filter: contrast(1.85);
+  }
+}
+
+@keyframes dialSpin {
+  to {
+    transform: rotate(720deg);
+  }
+}
+
+@media (max-width: 860px) {
+  .hero {
+    min-height: auto;
+  }
+
+  .tv-face {
+    grid-template-columns: 1fr;
+  }
+
+  .control-panel {
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    align-items: center;
+  }
+
+  .channel-dial {
+    width: 92px;
+  }
+
+  .speaker-grill {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 7px;
+  }
+
+  .speaker-grill i {
+    height: 58px;
+    width: 7px;
+    justify-self: center;
+  }
+
+  .tuner-form {
+    grid-template-columns: 1fr;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .page-shell {
+    width: min(100% - 20px, 1180px);
+    padding-top: 18px;
+  }
+
+  .hero {
+    padding-top: 64px;
+  }
+
+  .tv-brand-row,
+  .section-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tv-set {
+    border-width: 5px;
+    border-radius: 20px 20px 28px 28px;
+  }
+
+  .crt-screen {
+    min-height: 255px;
+  }
+
+  .main-tv-embed {
+    min-height: 255px;
+  }
+
+  .broadcast-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .broadcast-actions a {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .results-grid,
+  .card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .copy-btn {
+    min-width: 100%;
+  }
+
+  .modal-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="woodgrain" aria-hidden="true"></div>
+
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="antenna" aria-hidden="true">
+        <span class="antenna-left"></span>
+        <span class="antenna-right"></span>
+        <span class="antenna-base"></span>
+      </div>
+
+      <div class="tv-set">
+        <div class="tv-brand-row">
+          <h1 id="page-title">TIME MACHINE TV</h1>
+          <span class="signal-badge">SIGNAL READY</span>
+        </div>
+
+        <div class="tv-face">
+          <div class="screen-bezel">
+            <div class="crt-screen power-on" id="tv-screen" aria-live="polite">
+              <div class="screen-glass"></div>
+              <div class="scanlines"></div>
+              <div class="screen-content" id="screen-content">
+                <p class="screen-kicker">CHANNEL 00</p>
+                <p class="screen-title">ENTER AN ERA</p>
+                <p class="screen-copy">Tune the archive to 1985, the 70s, early 90s...</p>
+              </div>
+            </div>
+          </div>
+
+          <aside class="control-panel" aria-label="Television controls">
+            <button class="channel-dial" id="channel-dial" type="button" aria-label="Spin decorative channel dial">
+              <span></span>
+            </button>
+            <div class="speaker-grill" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <div class="status-light" aria-hidden="true"></div>
+          </aside>
+        </div>
+
+        <form class="tuner-form" id="search-form">
+          <label for="era-input">TUNE TO ERA:</label>
+          <input id="era-input" name="era" type="text" autocomplete="off" placeholder="1985 / the 70s / early 90s" required>
+          <button class="search-button" type="submit">CHANNEL SEARCH</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="filters" aria-label="Category filters">
+      <button class="filter-btn" type="button" data-category="tv">📺 TV Shows</button>
+      <button class="filter-btn" type="button" data-category="music">🎵 Music</button>
+      <button class="filter-btn" type="button" data-category="news">📰 News</button>
+      <button class="filter-btn" type="button" data-category="movies">🎬 Movies</button>
+      <button class="filter-btn" type="button" data-category="commercials">📣 Commercials</button>
+      <button class="filter-btn is-active" type="button" data-category="all">🎮 All</button>
+    </section>
+
+    <section class="results-section" aria-labelledby="results-heading">
+      <div class="section-head">
+        <h2 id="results-heading">TV Guide Archive</h2>
+        <p id="result-meta">Tune an era to begin.</p>
+      </div>
+      <div class="results-grid" id="results-grid"></div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-modal-title">
+    <div class="video-shell modal-card" tabindex="-1">
+      <div class="video-titlebar">
+        <h2 id="video-modal-title">NOW PLAYING</h2>
+        <button class="close-video" id="close-video" type="button" aria-label="Close video">⏻</button>
+      </div>
+      <div class="embed-bezel">
+        <div class="embed-screen" id="embed-screen"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">COPIED!</div>
+
+  <script>
+const state = {
+  category: "all",
+  lastEra: "",
+  lastFocused: null,
+  previousFocus: null,
+  currentVideoIndex: -1,
+  autoSearchTimer: null,
+  results: []
+};
+
+const SEARCH_ENDPOINTS = [
+  "https://inv.thepixora.com/api/v1/search"
+];
+
+const els = {
+  form: document.getElementById("search-form"),
+  eraInput: document.getElementById("era-input"),
+  screen: document.getElementById("tv-screen"),
+  screenContent: document.getElementById("screen-content"),
+  resultsGrid: document.getElementById("results-grid"),
+  resultMeta: document.getElementById("result-meta"),
+  filters: Array.from(document.querySelectorAll(".filter-btn")),
+  videoModal: document.getElementById("video-modal"),
+  videoTitle: document.getElementById("video-modal-title"),
+  embedScreen: document.getElementById("embed-screen"),
+  closeVideo: document.getElementById("close-video"),
+  toast: document.getElementById("toast"),
+  dial: document.getElementById("channel-dial")
+};
+
+const categoryThemes = {
+  tv: "TV show episode sitcom variety show television",
+  music: "music video hit song live performance",
+  news: "news broadcast documentary current events",
+  movies: "movie trailer cinema clip film",
+  commercials: "commercial advertisement TV ad",
+  all: "TV show music video commercial news cartoon movie popular culture"
+};
+
+document.addEventListener("DOMContentLoaded", init);
+
+function init() {
+  bindEvents();
+  renderWelcome();
+  els.eraInput.focus();
+}
+
+function bindEvents() {
+  els.eraInput.addEventListener("input", () => {
+    const era = els.eraInput.value.trim();
+    state.currentVideoIndex = -1;
+    window.clearTimeout(state.autoSearchTimer);
+
+    if (era) {
+      renderEraPreview(era);
+      state.autoSearchTimer = window.setTimeout(() => {
+        state.lastEra = era;
+        runSearch(era, { autoPlay: true });
+      }, 900);
+    } else {
+      state.lastEra = "";
+      state.results = [];
+      els.resultsGrid.innerHTML = "";
+      els.resultMeta.textContent = "Tune an era to begin.";
+      renderWelcome();
+    }
+  });
+
+  els.form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const era = els.eraInput.value.trim();
+    if (!era) return;
+    window.clearTimeout(state.autoSearchTimer);
+    state.lastEra = era;
+    runSearch(era, { autoPlay: true });
+  });
+
+  els.filters.forEach((button) => {
+    button.addEventListener("click", () => {
+      state.category = button.dataset.category;
+      els.filters.forEach((item) => item.classList.toggle("is-active", item === button));
+      if (state.lastEra) {
+        runSearch(state.lastEra);
+      }
+    });
+  });
+
+  els.closeVideo.addEventListener("click", closeVideoModal);
+
+  els.videoModal.addEventListener("click", (event) => {
+    if (event.target === els.videoModal) closeVideoModal();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !els.videoModal.classList.contains("hidden")) {
+      closeVideoModal();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    const watch = event.target.closest("[data-watch]");
+    const copy = event.target.closest("[data-copy]");
+    const tune = event.target.closest("[data-tune]");
+
+    if (watch) {
+      tuneVideoById(watch.dataset.watch);
+    }
+
+    if (copy) {
+      copyToClipboard(copy.dataset.copy);
+    }
+
+    if (tune) {
+      changeBroadcast(tune.dataset.tune);
+    }
+  });
+
+  els.dial.addEventListener("click", () => {
+    els.dial.classList.remove("spin");
+    void els.dial.offsetWidth;
+    els.dial.classList.add("spin");
+  });
+}
+
+async function runSearch(era, options = {}) {
+  setScreenLoading();
+  els.resultMeta.textContent = "Searching the archive...";
+  els.resultsGrid.innerHTML = "";
+
+  try {
+    const query = buildQuery(era, state.category);
+    const searchData = await searchVideos(query);
+    const videos = searchData
+      .filter((item) => item.type === "video" && item.videoId)
+      .slice(0, 12);
+
+    if (!videos.length) {
+      state.results = [];
+      renderResults([]);
+      setNoSignal();
+      return;
+    }
+
+    state.results = videos.map(normalizeVideo);
+    state.currentVideoIndex = -1;
+
+    renderResults(state.results);
+    if (options.autoPlay) {
+      tuneVideo(0);
+    } else {
+      setScreenSuccess(era, state.results.length);
+    }
+  } catch (error) {
+    console.error(error);
+    if (error.isArchiveError) {
+      setChannelNotFound(error.message);
+      els.resultMeta.textContent = "The archive signal is unavailable right now. Try again in a moment.";
+    } else {
+      setChannelNotFound("Signal interrupted. Try again.");
+      els.resultMeta.textContent = "Something interrupted the broadcast.";
+    }
+    state.results = [];
+    state.currentVideoIndex = -1;
+    els.resultsGrid.innerHTML = "";
+  }
+}
+
+async function searchVideos(query) {
+  let lastError = null;
+
+  for (const endpoint of SEARCH_ENDPOINTS) {
+    try {
+      const searchUrl = new URL(endpoint);
+      searchUrl.search = new URLSearchParams({
+        q: query,
+        type: "video",
+        page: "1"
+      }).toString();
+
+      const response = await fetch(searchUrl, {
+        headers: { accept: "application/json" }
+      });
+      return await parseArchiveResponse(response);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("Archive signal unavailable.");
+}
+
+async function parseArchiveResponse(response) {
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.error?.message || data.error || "Archive signal unavailable.");
+    error.isArchiveError = true;
+    throw error;
+  }
+  return data;
+}
+
+function normalizeVideo(item) {
+  return {
+    id: item.videoId,
+    title: decodeEntities(item.title || "Untitled broadcast"),
+    channel: decodeEntities(item.author || "Unknown Channel"),
+    publishedAt: item.published ? new Date(item.published * 1000).toISOString() : "",
+    publishedText: item.publishedText || "",
+    thumbnail: `https://i.ytimg.com/vi/${encodeURIComponent(item.videoId)}/hqdefault.jpg`,
+    duration: formatSeconds(item.lengthSeconds)
+  };
+}
+
+function buildQuery(input, category) {
+  const era = parseEra(input);
+  return `${era.query} ${categoryThemes[category] || categoryThemes.all} ${era.modifier}`.replace(/\s+/g, " ").trim();
+}
+
+function parseEra(value) {
+  const input = value.toLowerCase().trim().replace(/^the\s+/, "");
+  const yearMatch = input.match(/\b(19\d{2}|20\d{2})\b/);
+  if (yearMatch) {
+    return { query: yearMatch[1], modifier: "archival footage" };
+  }
+
+  const decadeMatch = input.match(/\b(early|mid|late)?\s*'?(\d{2})s\b/);
+  if (decadeMatch) {
+    const period = decadeMatch[1] || "";
+    const decadeNumber = Number(decadeMatch[2]);
+    const century = decadeNumber <= 26 ? "20" : "19";
+    const decade = `${century}${decadeMatch[2]}s`;
+    const modifier = period ? `${period} ${decade} popular culture` : `${decade} popular culture`;
+    return { query: decade, modifier };
+  }
+
+  const longDecade = input.match(/\b(19\d0|20\d0)s\b/);
+  if (longDecade) {
+    return { query: longDecade[0], modifier: "popular culture archive" };
+  }
+
+  return { query: value, modifier: "retro archive popular culture" };
+}
+
+function renderResults(videos) {
+  if (!videos.length) {
+    els.resultsGrid.innerHTML = '<p class="empty-results">No listings found in this broadcast window.</p>';
+    els.resultMeta.textContent = "No results. Try another era or category.";
+    return;
+  }
+
+  els.resultMeta.textContent = `${videos.length} broadcasts tuned for ${state.lastEra}.`;
+  els.resultsGrid.innerHTML = videos.map((video) => {
+    const url = youtubeUrl(video.id);
+    return `
+      <article class="video-card">
+        <div class="thumb-wrap">
+          <img src="${escapeHtml(video.thumbnail)}" alt="">
+          <span class="duration-badge">${escapeHtml(video.duration)}</span>
+        </div>
+        <div class="card-body">
+          <h3>${escapeHtml(video.title)}</h3>
+          <p class="card-meta">
+            <span>${escapeHtml(video.channel)}</span>
+            <span>${formatDate(video.publishedAt, video.publishedText)}</span>
+          </p>
+        </div>
+        <div class="card-actions">
+          <button class="action-btn" type="button" data-watch="${escapeHtml(video.id)}">▶ WATCH</button>
+          <a class="action-btn" href="${url}" target="_blank" rel="noopener noreferrer">🔗 VIEW ON YOUTUBE</a>
+          <button class="action-btn copy-btn" type="button" data-copy="${url}" aria-label="Copy YouTube link">⧉</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function renderWelcome() {
+  els.screen.classList.remove("static-mode");
+  els.screenContent.className = "screen-content";
+  els.screenContent.innerHTML = `
+    <p class="screen-kicker">CHANNEL 00</p>
+    <p class="screen-title">ENTER AN ERA</p>
+    <p class="screen-copy">Tune the archive to 1985, the 70s, early 90s...</p>
+  `;
+}
+
+function renderEraPreview(era) {
+  els.screen.classList.remove("static-mode");
+  els.screenContent.className = "screen-content";
+  els.screenContent.innerHTML = `
+    <p class="screen-kicker">TUNING ERA</p>
+    <p class="screen-title">${escapeHtml(era).toUpperCase()}</p>
+    <p class="screen-copy">PRESS CHANNEL SEARCH TO LOAD BROADCASTS</p>
+  `;
+}
+
+function setScreenLoading() {
+  els.screen.classList.add("static-mode");
+  els.screenContent.className = "screen-content";
+  els.screenContent.innerHTML = `
+    <p class="screen-kicker">PLEASE STAND BY</p>
+    <p class="screen-title">SEARCHING</p>
+    <p class="screen-copy">SEARCHING THE ARCHIVES...</p>
+  `;
+}
+
+function setScreenSuccess(era, count) {
+  els.screen.classList.remove("static-mode");
+  els.screenContent.className = "screen-content";
+  els.screenContent.innerHTML = `
+    <p class="screen-kicker">SIGNAL LOCKED</p>
+    <p class="screen-title">${escapeHtml(String(era)).toUpperCase()}</p>
+    <p class="screen-copy">${count} BROADCASTS FOUND</p>
+  `;
+}
+
+function tuneVideoById(videoId) {
+  const index = state.results.findIndex((item) => item.id === videoId);
+  if (index === -1) return;
+  tuneVideo(index);
+}
+
+function tuneVideo(index) {
+  if (!state.results.length) return;
+  const nextIndex = (index + state.results.length) % state.results.length;
+  const video = state.results[nextIndex];
+  const url = youtubeUrl(video.id);
+  state.currentVideoIndex = nextIndex;
+
+  els.screen.classList.remove("static-mode");
+  els.screenContent.className = "screen-content player-mode";
+  els.screenContent.innerHTML = `
+    <iframe
+      class="main-tv-embed"
+      title="${escapeHtml(video.title)}"
+      src="https://www.youtube.com/embed/${encodeURIComponent(video.id)}?autoplay=1&rel=0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
+    <div class="broadcast-overlay">
+      <p class="broadcast-label">NOW PLAYING CH ${String(nextIndex + 1).padStart(2, "0")}</p>
+      <h2>${escapeHtml(video.title)}</h2>
+      <div class="broadcast-actions">
+        <button type="button" data-tune="prev">◀ CHANNEL</button>
+        <a href="${url}" target="_blank" rel="noopener noreferrer">OPEN ON YOUTUBE</a>
+        <button type="button" data-tune="next">CHANGE BROADCAST ▶</button>
+      </div>
+    </div>
+  `;
+
+  els.resultMeta.textContent = `Now playing channel ${nextIndex + 1} of ${state.results.length}.`;
+  els.screen.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function changeBroadcast(direction) {
+  if (state.currentVideoIndex === -1 || !state.results.length) return;
+  const delta = direction === "prev" ? -1 : 1;
+  tuneVideo(state.currentVideoIndex + delta);
+}
+
+function setNoSignal() {
+  els.screen.classList.remove("static-mode");
+  els.screenContent.className = "screen-content";
+  els.screenContent.innerHTML = `
+    <div class="no-signal" aria-label="No signal">
+      <span>NO SIGNAL</span>
+    </div>
+  `;
+}
+
+function setChannelNotFound(message) {
+  els.screen.classList.remove("static-mode");
+  els.screenContent.className = "screen-content error";
+  els.screenContent.innerHTML = `
+    <p class="screen-kicker">ERROR</p>
+    <p class="screen-title">CHANNEL NOT FOUND</p>
+    <p class="screen-copy">${escapeHtml(message)}</p>
+  `;
+}
+
+function openVideoModal(video) {
+  state.previousFocus = document.activeElement;
+  els.videoTitle.textContent = video.title;
+  els.embedScreen.innerHTML = `
+    <iframe
+      title="${escapeHtml(video.title)}"
+      src="https://www.youtube.com/embed/${encodeURIComponent(video.id)}?autoplay=1&rel=0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
+  `;
+  openModal(els.videoModal, els.closeVideo);
+}
+
+function closeVideoModal() {
+  els.embedScreen.innerHTML = "";
+  closeModal(els.videoModal);
+}
+
+function openModal(modal, focusTarget) {
+  state.previousFocus = document.activeElement;
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  focusTarget?.focus();
+  modal.addEventListener("keydown", trapFocus);
+}
+
+function closeModal(modal) {
+  modal.classList.add("hidden");
+  document.body.style.overflow = "";
+  modal.removeEventListener("keydown", trapFocus);
+  if (state.previousFocus && typeof state.previousFocus.focus === "function") {
+    state.previousFocus.focus();
+  }
+}
+
+function trapFocus(event) {
+  if (event.key !== "Tab") return;
+  const modal = event.currentTarget;
+  const focusable = Array.from(modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), summary, [tabindex]:not([tabindex="-1"])'))
+    .filter((item) => item.offsetParent !== null);
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast("COPIED!");
+  } catch {
+    const helper = document.createElement("textarea");
+    helper.value = text;
+    helper.setAttribute("readonly", "");
+    helper.style.position = "fixed";
+    helper.style.left = "-9999px";
+    document.body.appendChild(helper);
+    helper.select();
+    document.execCommand("copy");
+    helper.remove();
+    showToast("COPIED!");
+  }
+}
+
+function showToast(message) {
+  els.toast.textContent = message;
+  els.toast.classList.add("show");
+  window.clearTimeout(showToast.timeout);
+  showToast.timeout = window.setTimeout(() => {
+    els.toast.classList.remove("show");
+  }, 1600);
+}
+
+function youtubeUrl(videoId) {
+  return `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
+}
+
+function formatSeconds(value) {
+  const total = Number(value || 0);
+  if (!total) return "VHS";
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const seconds = total % 60;
+  const parts = hours ? [hours, minutes, seconds] : [minutes, seconds];
+  return parts.map((part, index) => index === 0 ? String(part) : String(part).padStart(2, "0")).join(":");
+}
+
+function formatDate(value, fallback) {
+  if (!value) return (fallback || "AIR DATE UNKNOWN").toUpperCase();
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return (fallback || "AIR DATE UNKNOWN").toUpperCase();
+  return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }).toUpperCase();
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
+}
+
+function decodeEntities(value) {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = value;
+  return textarea.value;
+}
+
+  </script>
+</body>
+</html>
